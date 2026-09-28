@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel comercial 99</title>
+  <style>
+    :root {
+      --brand-primary: #ffdd00;
+      --brand-primary-strong: #f5c400;
+      --brand-dark: #121212;
+      --brand-text: #1f1f1f;
+      --brand-muted: #5b5b5b;
+      --brand-bg: #fffbea;
+      --brand-surface: #ffffff;
+      --brand-border: #e8dd9b;
+      --brand-success: #17803d;
+      --brand-danger: #bb2d3b;
+      --brand-warning: #a36a00;
+      --brand-shadow: 0 14px 34px rgba(18, 18, 18, 0.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Montserrat, DiDiSans, Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #fffdf2 0%, #fff7c7 100%);
+      color: var(--brand-text);
+    }
+    .wrap { max-width: 1460px; margin: 0 auto; padding: 28px 20px 40px; }
+    .hero {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #fff2a8 100%);
+      border: 1px solid #e6cf49;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--brand-shadow);
+      margin-bottom: 22px;
+    }
+    .hero-top { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-start; }
+    .hero h1 { margin:0 0 8px; font-size:30px; color:var(--brand-dark); }
+    .hero p { margin:0; max-width:900px; color:#313131; line-height:1.55; font-weight:500; }
+    .badge-row, .toolbar, .tab-row, .button-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    .badge {
+      display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border-radius:999px;
+      background:rgba(255,255,255,0.72); border:1px solid rgba(18,18,18,0.08); font-size:13px; font-weight:700;
+    }
+    button {
+      appearance:none; border:0; border-radius:999px; padding:12px 16px; font-family:inherit; font-weight:700; cursor:pointer;
+      transition:transform .15s ease, opacity .15s ease;
+    }
+    button:hover { transform:translateY(-1px); }
+    .btn-primary { background:var(--brand-dark); color:#fff; }
+    .btn-secondary { background:#fff; color:var(--brand-dark); border:1px solid rgba(18,18,18,0.12); }
+    .tab-btn { background:#fff7cf; color:var(--brand-dark); border:1px solid var(--brand-border); }
+    .tab-btn.active { background:var(--brand-dark); color:#fff; border-color:var(--brand-dark); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:18px; margin-top:18px; }
+    .card {
+      grid-column:span 12; background:var(--brand-surface); border:1px solid var(--brand-border);
+      border-radius:var(--radius-lg); padding:20px; box-shadow:var(--brand-shadow);
+    }
+    .card h2, .card h3 { margin:0 0 8px; color:var(--brand-dark); }
+    .sub { margin:0 0 18px; color:var(--brand-muted); line-height:1.5; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .owner-grid, .tip-grid, .alert-grid, .exec-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .kpi, .owner-card, .tip-card, .alert-card, .exec-card {
+      background:linear-gradient(180deg, #fff 0%, #fffced 100%);
+      border:1px solid var(--brand-border); border-radius:var(--radius-md); padding:16px;
+    }
+    .kpi .label, .small-label { font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--brand-muted); font-weight:700; }
+    .value, .owner-total, .exec-total { margin-top:8px; font-size:30px; font-weight:800; color:var(--brand-dark); }
+    .detail { margin-top:6px; font-size:13px; color:var(--brand-muted); line-height:1.45; }
+    .title-strong { font-size:15px; font-weight:800; color:var(--brand-dark); margin-bottom:10px; }
+    .meta { margin-top:6px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--brand-muted); }
+    .table-wrap { overflow:auto; border:1px solid var(--brand-border); border-radius:var(--radius-md); }
+    table { width:100%; border-collapse:collapse; font-size:14px; background:#fff; }
+    th, td { padding:12px; border-bottom:1px solid #f0e7b5; text-align:left; vertical-align:top; }
+    th { position:sticky; top:0; background:#fff8cf; color:var(--brand-dark); z-index:1; }
+    tr:last-child td { border-bottom:0; }
+    ul.clean { margin:0; padding-left:18px; line-height:1.55; }
+    .mini-note { margin-top:14px; font-size:13px; color:var(--brand-muted); line-height:1.5; }
+    .obs-box { display:flex; flex-direction:column; gap:10px; }
+    textarea {
+      width:100%; min-height:170px; resize:vertical; border-radius:var(--radius-md); border:1px solid var(--brand-border);
+      padding:14px; font:inherit; color:var(--brand-text); background:#fffef8;
+    }
+    .obs-status { font-size:13px; color:var(--brand-muted); min-height:20px; }
+    .pill-positive, .pill-warning, .pill-danger {
+      display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:800; margin-top:8px;
+    }
+    .pill-positive { background:#e8f6ec; color:var(--brand-success); }
+    .pill-warning { background:#fff3d6; color:var(--brand-warning); }
+    .pill-danger { background:#fde8eb; color:var(--brand-danger); }
+    .empty-state {
+      border:1px dashed var(--brand-border); border-radius:var(--radius-md); padding:18px; background:#fffdf6;
+    }
+    @media (max-width: 1100px) {
+      .kpi-grid, .owner-grid, .tip-grid, .alert-grid, .exec-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 720px) {
+      .kpi-grid, .owner-grid, .tip-grid, .alert-grid, .exec-grid { grid-template-columns:1fr; }
+      .hero h1 { font-size:24px; }
+    }
+    @media print {
+      body { background:#fff; }
+      .wrap { max-width:none; padding:0; }
+      .hero, .card { box-shadow:none; }
+      .toolbar, .tab-row, .obs-box button, textarea { display:none !important; }
+      .tab-panel { display:block !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h1>Painel comercial 99</h1>
+          <p>Dashboard executivo com visão geral do funil, leitura quantitativa e qualitativa por executivo, planos de ação para key account hunters, alertas de relacionamento e uma aba dedicada à base de leads.</p>
+          <div class="badge-row">
+            <div class="badge">Snapshot do CRM: 28/09/2026</div>
+            <div class="badge">Pipeline: Acquisition</div>
+            <div class="badge">Total do pipeline: 477 negócios</div>
+            <div class="badge">Próximas atividades em até 7 dias: 13</div>
+            <div class="badge">Negócios com contato associado: 1431</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn-primary" id="exportCsvBtn">Extrair resumo CSV</button>
+          <button class="btn-secondary" id="printBtn">Extrair PDF</button>
+          <button class="btn-secondary" id="exportNotesBtn">Extrair observações</button>
+        </div>
+      </div>
+      <div class="tab-row">
+        <button class="tab-btn active" data-tab="geral">Visão geral</button>
+        <button class="tab-btn" data-tab="executivos">Executivos</button>
+        <button class="tab-btn" data-tab="planos">Planos de ação</button>
+        <button class="tab-btn" data-tab="alertas">Alertas e retomada</button>
+        <button class="tab-btn" data-tab="leads">Base associada</button>
+      </div>
+    </section>
+
+    <div id="geral" class="tab-panel active">
+      <div class="grid">
+        <section class="card">
+          <h2>Resumo executivo do funil</h2>
+          <p class="sub">Percentuais sobre a base total do pipeline Acquisition.</p>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Total de negócios</div><div class="value">477</div><div class="detail">Base total do pipeline Acquisition.</div></div>
+            <div class="kpi"><div class="label">Closed Won</div><div class="value">72</div><div class="detail">15,1% do pipeline total.</div></div>
+            <div class="kpi"><div class="label">Lost</div><div class="value">284</div><div class="detail">59,5% do pipeline total.</div></div>
+            <div class="kpi"><div class="label">Etapas abertas</div><div class="value">121</div><div class="detail">25,4% do pipeline total em Backlog, Prospecting, Discovery&Qualification, Commercial Proposal e Closing.</div></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Números gerais por executivo</h2>
+          <p class="sub">Leitura quantitativa agregada por owner usando total de carteira, negócios abertos, ganhos e perdidos.</p>
+          <div class="exec-grid">
+            <div class="exec-card"><div class="title-strong">Fabio Lyra</div><div class="exec-total">240</div><div class="meta"><span>94 abertos</span><span>8 ganhos</span></div><div class="detail">138 perdidos. Executivo com maior concentração de carteira e também maior fila de retomada.</div></div>
+            <div class="exec-card"><div class="title-strong">Renan Cleto</div><div class="exec-total">81</div><div class="meta"><span>0 abertos</span><span>18 ganhos</span></div><div class="detail">63 perdidos. Carteira muito mais histórica do que ativa neste pipeline.</div></div>
+            <div class="exec-card"><div class="title-strong">Flavia Alves</div><div class="exec-total">79</div><div class="meta"><span>14 abertos</span><span>13 ganhos</span></div><div class="detail">52 perdidos. Mistura relevante de fechamento e recuperação possível.</div></div>
+            <div class="exec-card"><div class="title-strong">Jefferson Lima</div><div class="exec-total">43</div><div class="meta"><span>2 abertos</span><span>14 ganhos</span></div><div class="detail">27 perdidos. Boa conversão de ganhos, mas pouca abertura ativa no pipeline atual.</div></div>
+            <div class="exec-card"><div class="title-strong">larissa cardozo</div><div class="exec-total">15</div><div class="meta"><span>0 abertos</span><span>15 ganhos</span></div><div class="detail">Carteira encerrada com desempenho de ganho integral no recorte atual.</div></div>
+            <div class="exec-card"><div class="title-strong">Simone Costa Alencar</div><div class="exec-total">13</div><div class="meta"><span>6 abertos</span><span>3 ganhos</span></div><div class="detail">4 perdidos. Carteira pequena, porém ainda com alavancas para avanço.</div></div>
+            <div class="exec-card"><div class="title-strong">Andressa de Sousa Almeida</div><div class="exec-total">4</div><div class="meta"><span>3 abertos</span><span>1 ganho</span></div><div class="detail">Sem perdas acima de 30 dias no recorte retornado.</div></div>
+            <div class="exec-card"><div class="title-strong">Guilherme Amaral Thomaz</div><div class="exec-total">2</div><div class="meta"><span>2 abertos</span><span>0 ganhos</span></div><div class="detail">Carteira enxuta, concentrada em avanço e sem histórico de perdas neste recorte.</div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="executivos" class="tab-panel">
+      <div class="grid">
+        <section class="card">
+          <h2>Análise qualitativa e quantitativa por executivo</h2>
+          <p class="sub">Leitura gerencial combinando volume, estágio da carteira e sinais qualitativos do pipeline.</p>
+          <div class="owner-grid">
+            <div class="owner-card"><div class="title-strong">Fabio Lyra</div><div class="owner-total">240</div><div class="meta"><span>50,3% do pipeline</span><span>94 abertos | 8 ganhos | 138 perdidos</span></div><ul class="clean"><li>Maior concentração operacional do pipeline.</li><li>17 negócios abertos sem contato recente apareceram no recorte e todos ligados a esta carteira.</li><li>Qualitativamente, os exemplos consultados mostram deals com temas de jurídico, integração, aprovação interna e coordenação de stakeholders.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">Renan Cleto</div><div class="owner-total">81</div><div class="meta"><span>17,0% do pipeline</span><span>0 abertos | 18 ganhos | 63 perdidos</span></div><ul class="clean"><li>Carteira atual fortemente encerrada.</li><li>Boa base de ganhos, mas pouco estoque ativo para evolução imediata.</li><li>Leitura qualitativa: precisa operar mais como reativação e renovação de tese do que avanço de pipeline aberto.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">Flavia Alves</div><div class="owner-total">79</div><div class="meta"><span>16,6% do pipeline</span><span>14 abertos | 13 ganhos | 52 perdidos</span></div><ul class="clean"><li>Carteira equilibrada entre histórico de ganho e abertura atual.</li><li>Tem espaço para foco tático em Closing e retomada qualificada.</li><li>Boa candidata para conversão de contas maduras se houver rotina firme de follow-up.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">Jefferson Lima</div><div class="owner-total">43</div><div class="meta"><span>9,0% do pipeline</span><span>2 abertos | 14 ganhos | 27 perdidos</span></div><ul class="clean"><li>Taxa de ganhos relativamente forte frente ao estoque atual.</li><li>O gargalo parece ser geração e manutenção de pipeline aberto.</li><li>Pede estratégia de reposição de topo e revisão de contas perdidas com potencial de retorno.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">larissa cardozo</div><div class="owner-total">15</div><div class="meta"><span>3,1% do pipeline</span><span>0 abertos | 15 ganhos | 0 perdidos</span></div><ul class="clean"><li>No recorte atual, a carteira está integralmente em ganhos.</li><li>Sem base aberta para alertas operacionais imediatos.</li><li>Leitura qualitativa: perfil de alta efetividade no que foi encerrado.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">Simone Costa Alencar</div><div class="owner-total">13</div><div class="meta"><span>2,7% do pipeline</span><span>6 abertos | 3 ganhos | 4 perdidos</span></div><ul class="clean"><li>Carteira pequena e acionável.</li><li>Proporção de abertos sugere espaço para avanço rápido com cadência bem definida.</li><li>Bom território para atuação cirúrgica em poucas contas prioritárias.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">Andressa de Sousa Almeida</div><div class="owner-total">4</div><div class="meta"><span>0,8% do pipeline</span><span>3 abertos | 1 ganho | 0 perdas > 30d</span></div><ul class="clean"><li>Baixa volumetria, alta possibilidade de acompanhamento próximo.</li><li>Carteira ainda muito mais orientada a avanço do que a limpeza histórica.</li><li>Leitura qualitativa: boa candidata para disciplina de execução e fechamento rápido.</li></ul></div>
+            <div class="owner-card"><div class="title-strong">Guilherme Amaral Thomaz</div><div class="owner-total">2</div><div class="meta"><span>0,4% do pipeline</span><span>2 abertos | 0 ganhos | 0 perdidos</span></div><ul class="clean"><li>Carteira enxuta e totalmente ativa.</li><li>Sem ruído de histórico pesado de perdas no recorte.</li><li>Leitura qualitativa: momento ideal para rigor em cadência, documentação e evolução de etapa.</li></ul></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="planos" class="tab-panel">
+      <div class="grid">
+        <section class="card">
+          <h2>Plano de ação do key account hunter</h2>
+          <p class="sub">Guia operacional para organização da carteira, disciplina de execução e avanço de contas estratégicas.</p>
+          <div class="tip-grid">
+            <div class="tip-card"><div class="title-strong">Organização da semana</div><ul class="clean"><li>Separar carteira em 3 blocos: avanço, recuperação e monitoramento.</li><li>Reservar janelas fixas para follow-up, proposta e reativação.</li><li>Encerrar a semana com revisão de aging e atualização de próximo passo.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Ritual diário</div><ul class="clean"><li>Começar pelos negócios com data de contato vencendo ou sem contato recente.</li><li>Atualizar sempre próximo passo e data da próxima atividade no mesmo dia.</li><li>Remover ambiguidade: toda conta estratégica precisa ter responsável, hipótese e próximo avanço.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Governança da carteira</div><ul class="clean"><li>Não deixar negócio aberto sem hipótese clara de avanço.</li><li>Usar perdas antigas para mapear retorno com novo timing, nova dor ou novo sponsor.</li><li>Registrar objeções recorrentes para melhorar discurso e proposta.</li></ul></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Dicas por etapa do funil</h2>
+          <p class="sub">Ações práticas para um key account hunter em cada fase.</p>
+          <div class="owner-grid">
+            <div class="tip-card"><div class="title-strong">Backlog</div><ul class="clean"><li>Validar aderência mínima, ICP e potencial da conta.</li><li>Definir primeiro gatilho de contato e hipótese de dor.</li><li>Evitar acumular backlog sem data de ataque.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Prospecting</div><ul class="clean"><li>Aumentar cadência multicanal com mensagem curta e tese clara.</li><li>Testar sponsor, operação e área de compras quando necessário.</li><li>Se não houver resposta, redefinir abordagem e motivo de agora.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Discovery&Qualification</div><ul class="clean"><li>Capturar cenário atual, urgência, impacto e decisores.</li><li>Documentar critérios de decisão e riscos já na descoberta.</li><li>Sair da reunião com compromisso objetivo e data marcada.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Commercial Proposal</div><ul class="clean"><li>Amarrar proposta aos problemas e aos ganhos esperados.</li><li>Antecipar objeções de jurídico, operação, integração e pricing.</li><li>Evitar proposta solta sem call de revisão.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Closing</div><ul class="clean"><li>Conduzir plano de fechamento com donos, dependências e prazo.</li><li>Monitorar jurídico, assinatura, validação financeira e integração.</li><li>Escalar rápido quando o bloqueio for interno do cliente.</li></ul></div>
+            <div class="tip-card"><div class="title-strong">Lost</div><ul class="clean"><li>Classificar motivo real de perda e momento da retomada.</li><li>Separar perdas definitivas de perdas por timing.</li><li>Programar reentrada quando houver mudança de contexto, budget ou sponsor.</li></ul></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="alertas" class="tab-panel">
+      <div class="grid">
+        <section class="card">
+          <h2>Alertas do dashboard</h2>
+          <p class="sub">Sinais de atenção para relacionamento, cadência e reativação.</p>
+          <div class="alert-grid">
+            <div class="alert-card"><div class="title-strong">Dias sem contato</div><div class="owner-total">110</div><div class="detail">Negócios abertos sem contato recente na consulta usada para este dashboard.</div><span class="pill-danger">Prioridade alta</span></div>
+            <div class="alert-card"><div class="title-strong">Contato aproximando</div><div class="owner-total">13</div><div class="detail">Negócios com próxima atividade entre 28/09/2026 e 05/10/2026.</div><span class="pill-warning">Acompanhar nesta semana</span></div>
+            <div class="alert-card"><div class="title-strong">Perdas com mais de 30 dias</div><div class="owner-total">272</div><div class="detail">Negócios perdidos antes de 29/08/2026, bons candidatos para revisão de retomada.</div><span class="pill-positive">Janela de reativação</span></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Exemplos de aging e retomada</h2>
+          <p class="sub">Amostras com datas válidas para ilustrar dias sem contato, perdas antigas e oportunidades de retorno.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Conta</th><th>Executivo</th><th>Status</th><th>Último contato</th><th>Dias sem contato</th><th>Data de perda</th><th>Dias desde a perda</th><th>Próxima atividade</th><th>Leitura</th></tr></thead>
+              <tbody>
+                <tr><td>Veste</td><td>Fabio Lyra</td><td>Closing</td><td>10/06/2026</td><td>110</td><td>-</td><td>-</td><td>01/10/2026</td><td>Conta aberta com follow-up tardio, mas com agenda futura já marcada.</td></tr>
+                <tr><td>Pizza Prime</td><td>Fabio Lyra</td><td>Closing</td><td>08/07/2026</td><td>82</td><td>-</td><td>-</td><td>Sem próxima atividade</td><td>Risco alto de esfriamento.</td></tr>
+                <tr><td>Grupo Lins Ferrão (Lojas Pompeia)</td><td>Fabio Lyra</td><td>Commercial Proposal</td><td>19/08/2026</td><td>40</td><td>-</td><td>-</td><td>29/09/2026</td><td>Precisa chegar na atividade com pauta objetiva e trava mapeada.</td></tr>
+                <tr><td>Maria Acai</td><td>Fabio Lyra</td><td>Lost</td><td>14/07/2026</td><td>76</td><td>19/08/2026</td><td>40</td><td>Sem próxima atividade</td><td>Boa candidata para retomada com tese nova.</td></tr>
+                <tr><td>Hermanito</td><td>Fabio Lyra</td><td>Lost</td><td>16/07/2026</td><td>74</td><td>17/08/2026</td><td>42</td><td>29/09/2026</td><td>Perda antiga já com movimento futuro marcado.</td></tr>
+                <tr><td>Chalezinho</td><td>Fabio Lyra</td><td>Lost</td><td>12/08/2026</td><td>47</td><td>17/08/2026</td><td>42</td><td>02/03/2027</td><td>Retomada existe, mas em horizonte distante.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Observações da reunião</h2>
+          <p class="sub">Use este campo para registrar leitura executiva, encaminhamentos e decisões da reunião.</p>
+          <div class="obs-box">
+            <textarea id="meetingNotes" placeholder="Escreva aqui os encaminhamentos, owners, riscos, bloqueios e decisões da reunião."></textarea>
+            <div class="button-row">
+              <button class="btn-primary" id="saveNotesBtn" type="button">Salvar observação</button>
+              <button class="btn-secondary" id="clearNotesBtn" type="button">Limpar observação</button>
+            </div>
+            <div class="obs-status" id="notesStatus">Nenhuma observação salva nesta visualização.</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="leads" class="tab-panel">
+      <div class="grid">
+        <section class="card">
+          <h2>Base de negócios com contatos associados</h2>
+          <p class="sub">Como o objeto LEAD está vazio neste portal, esta aba usa a base alternativa mais completa disponível: negócios com contatos associados, trazendo nome, e-mail, telefone, etapa, pipeline, empresa, executivo e IDs relacionados.</p>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Negócios únicos com contato associado</div><div class="value">1431</div><div class="detail">Contagem única de negócios que possuem pelo menos um contato associado.</div></div>
+            <div class="kpi"><div class="label">Associações negócio-contato</div><div class="value">1918</div><div class="detail">Um mesmo negócio pode aparecer mais de uma vez quando possui mais de um contato associado.</div></div>
+            <div class="kpi"><div class="label">Registros com owner + e-mail + telefone</div><div class="value">115</div><div class="detail">Subseto com contato mais completo para priorização comercial.</div></div>
+            <div class="kpi"><div class="label">Objeto LEAD</div><div class="value">0</div><div class="detail">O objeto LEAD não possui registros neste momento.</div></div>
+          </div>
+          <div class="owner-grid" style="margin-top:18px;">
+            <div class="owner-card"><div class="title-strong">Acquisition</div><div class="owner-total">136</div><div class="detail">Negócios com contato associado neste pipeline.</div></div>
+            <div class="owner-card"><div class="title-strong">Inbound SMB</div><div class="owner-total">1084</div><div class="detail">Maior parte da base associada está neste pipeline.</div></div>
+            <div class="owner-card"><div class="title-strong">Outros pipelines</div><div class="owner-total">211</div><div class="detail">Soma de Inbound e eventos, Gestão de Contas, Onboarding, Integradora, Pricing e arquivados.</div></div>
+          </div>
+          <div class="owner-grid" style="margin-top:18px;">
+            <div class="owner-card"><div class="title-strong">Sem owner</div><div class="owner-total">1115</div><div class="detail">Maior bloco da base associada ainda sem executivo atribuído.</div></div>
+            <div class="owner-card"><div class="title-strong">Fabio Lyra</div><div class="owner-total">111</div><div class="detail">Maior carteira nomeada dentro da base associada.</div></div>
+            <div class="owner-card"><div class="title-strong">Renan Cleto</div><div class="owner-total">36</div><div class="detail">Base associada nomeada por executivo.</div></div>
+            <div class="owner-card"><div class="title-strong">Flavia Alves</div><div class="owner-total">32</div><div class="detail">Boa participação entre os owners com dados associados.</div></div>
+            <div class="owner-card"><div class="title-strong">Jefferson Lima</div><div class="owner-total">27</div><div class="detail">Volume relevante de contas com contato associado.</div></div>
+            <div class="owner-card"><div class="title-strong">Andressa de Sousa Almeida</div><div class="owner-total">22</div><div class="detail">Carteira menor, mas com boa rastreabilidade de contato.</div></div>
+            <div class="owner-card"><div class="title-strong">Simone Costa Alencar</div><div class="owner-total">9</div><div class="detail">Base enxuta dentro do conjunto associado.</div></div>
+            <div class="owner-card"><div class="title-strong">Outros owners</div><div class="owner-total">79</div><div class="detail">Demais executivos com volume menor ou não resolvidos nominalmente neste recorte.</div></div>
+            <div class="owner-card"><div class="title-strong">Registros prioritários</div><div class="owner-total">115</div><div class="detail">Owner + e-mail + telefone preenchidos, ideais para ação comercial imediata.</div></div>
+          </div>
+          <div class="table-wrap" style="margin-top:18px;">
+            <table>
+              <thead>
+                <tr><th>Negócio</th><th>Pipeline</th><th>Etapa</th><th>Data de criação</th><th>Empresa</th><th>Contato</th><th>Sobrenome</th><th>E-mail</th><th>Telefone</th><th>Celular</th><th>Executivo</th><th>ID negócio</th><th>ID contato</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Tatiane Borges da Silva</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Tatiane Borges da Silva</td><td>Sem nome</td><td>Sem sobrenome</td><td>tatianeborgesparceria@gmail.com</td><td>+55 21998316499</td><td>Sem celular</td><td>Sem owner</td><td>65297445387</td><td>251431301461</td></tr>
+                <tr><td>Juliane Rodrigues Dortelmann</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Juliane Rodrigues Dortelmann</td><td>Sem nome</td><td>Sem sobrenome</td><td>julianerodriguesliziardi@gmail.com</td><td>+55 51991896773</td><td>Sem celular</td><td>Sem owner</td><td>65311090960</td><td>251518116940</td></tr>
+                <tr><td>67.308.801 RAFAEL CORREA GONZALEZ</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>67.308.801 RAFAEL CORREA GONZALEZ</td><td>Sem nome</td><td>Sem sobrenome</td><td>rsmexpress26@gmail.com</td><td>+55 51993085466</td><td>Sem celular</td><td>Sem owner</td><td>65330589460</td><td>251502502656</td></tr>
+                <tr><td>Divino sabor doceria</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Divino sabor doceria</td><td>Sem nome</td><td>Sem sobrenome</td><td>tamirescsilva17@outlook.com</td><td>+55 19994187980</td><td>Sem celular</td><td>Sem owner</td><td>65299275279</td><td>251369746706</td></tr>
+                <tr><td>padaria campanella</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>padaria campanella</td><td>Sem nome</td><td>Sem sobrenome</td><td>padariacampanella@gmail.com</td><td>+55 11981011901</td><td>Sem celular</td><td>Sem owner</td><td>65330746652</td><td>251447551309</td></tr>
+                <tr><td>Mídia Açaí</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Mídia Açaí</td><td>Sem nome</td><td>Sem sobrenome</td><td>brunnoraphael3010@gmail.com</td><td>+55 11947029739</td><td>Sem celular</td><td>Sem owner</td><td>65310933364</td><td>251506287773</td></tr>
+                <tr><td>Pandolle Brindes</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Pandolle Brindes</td><td>Sem nome</td><td>Sem sobrenome</td><td>pandollebrindes@gmail.com</td><td>+55 11996914245</td><td>Sem celular</td><td>Sem owner</td><td>65304292706</td><td>251429504074</td></tr>
+                <tr><td>Starmed solution ltda</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Starmed solution ltda</td><td>Sem nome</td><td>Sem sobrenome</td><td>contato@starmedsolution.com</td><td>+55 21995094097</td><td>Sem celular</td><td>Sem owner</td><td>65317559163</td><td>251475120555</td></tr>
+                <tr><td>cabell produtos para salão</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>cabell produtos para salão</td><td>Luiz Gustavo Ponzo</td><td>Sem sobrenome</td><td>fiscal@cabell.com.br</td><td>+55 11958920270</td><td>Sem celular</td><td>Sem owner</td><td>65312645549</td><td>248417612936</td></tr>
+                <tr><td>AFARMA NOVA POPULAR</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>AFARMA NOVA POPULAR</td><td>Sem nome</td><td>Sem sobrenome</td><td>farmanovapopular@gmail.com</td><td>+55 15991134955</td><td>Sem celular</td><td>Sem owner</td><td>65305222177</td><td>251431465736</td></tr>
+                <tr><td>Marco Antonio Mendes</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>28/09/2026</td><td>Marco Antonio Mendes</td><td>Sem nome</td><td>Sem sobrenome</td><td>marcoantoniomendes72@gmail.com</td><td>+55 18996463743</td><td>Sem celular</td><td>Sem owner</td><td>65318337186</td><td>251517181467</td></tr>
+                <tr><td>Plurix</td><td>Acquisition</td><td>Commercial Proposal</td><td>25/09/2026</td><td>Sem empresa</td><td>Fernando</td><td>Onofre Macedo</td><td>fernando.macedo@plurix.com</td><td>+55 11 99812-7148</td><td>Sem celular</td><td>Fabio Lyra</td><td>60721332588</td><td>250935006519</td></tr>
+                <tr><td>Mobspot Soluções Web</td><td>Inbound e eventos</td><td>Novo Lead</td><td>24/09/2026</td><td>Mobspot Soluções Web</td><td>Sidney</td><td>Sem sobrenome</td><td>sidney.miranda@mobspot.com.br</td><td>+55 11 98408-4432</td><td>Sem celular</td><td>Sem owner</td><td>65233869064</td><td>250653187099</td></tr>
+                <tr><td>ZE DA GRAXA LTDA</td><td>Inbound SMB</td><td>Novo Lead (HubSpot)</td><td>24/09/2026</td><td>ZE DA GRAXA LTDA</td><td>Bruno</td><td>Sem sobrenome</td><td>bruno@zedagraxa.com</td><td>+55 11986613279</td><td>Sem celular</td><td>Sem owner</td><td>65214998044</td><td>250604208295</td></tr>
+                <tr><td>M&P com de bebidas e conveniência</td><td>Inbound e eventos</td><td>Novo Lead</td><td>24/09/2026</td><td>M&P com de bebidas e conveniência</td><td>Rosangela matias Pereira</td><td>Sem sobrenome</td><td>mpbebidaseconveniencia@gmail.com</td><td>+55 19 99845-3238</td><td>Sem celular</td><td>Sem owner</td><td>65224112696</td><td>250806791169</td></tr>
+                <tr><td>Joice M Guedes Delivery</td><td>Inbound SMB</td><td>Duplicado</td><td>24/09/2026</td><td>Joice M Guedes Delivery</td><td>Sem nome</td><td>Sem sobrenome</td><td>frangaodacidade@gmail.com</td><td>+55 12 98133-8982</td><td>Sem celular</td><td>Sem owner</td><td>65214696051</td><td>250172439336</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mini-note">A contagem única retornou <strong>1431 negócios com contato associado</strong>. A consulta detalhada retornou <strong>1918 associações negócio-contato</strong>. Nesta aba, a leitura foi organizada também por <strong>executivo</strong>, por <strong>pipeline</strong> e por um subconjunto de <strong>115 registros prioritários</strong> com owner, e-mail e telefone preenchidos. A tabela abaixo continua mostrando um recorte recente para navegação prática.</p>
+          <div class="table-wrap" style="margin-top:18px;">
+            <table>
+              <thead>
+                <tr><th>Registros prioritários</th><th>Pipeline</th><th>Etapa</th><th>Data de criação</th><th>Contato</th><th>E-mail</th><th>Telefone</th><th>Executivo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Plurix</td><td>Acquisition</td><td>Commercial Proposal</td><td>25/09/2026</td><td>Fernando Onofre Macedo</td><td>fernando.macedo@plurix.com</td><td>+55 11 99812-7148</td><td>Fabio Lyra</td></tr>
+                <tr><td>Grupo Kadalora</td><td>Acquisition</td><td>Closing</td><td>21/08/2026</td><td>Valmor Friedrich</td><td>valmor.friedrich@uol.com.br</td><td>+55 11 95250-0080</td><td>Fabio Lyra</td></tr>
+                <tr><td>GE Beauty</td><td>Onboarding</td><td>Onboarding Cancelado</td><td>11/08/2026</td><td>Raphael Martins</td><td>raphael.martins@gebeauty.com.br</td><td>+55 11 96612-9726</td><td>Fabio Lyra</td></tr>
+                <tr><td>Nakato Sushi</td><td>Onboarding</td><td>Kick off</td><td>31/07/2026</td><td>Lucivande Sousa</td><td>lucivandesousa@refato.com</td><td>+55 11 97135-1566</td><td>Jefferson Lima</td></tr>
+                <tr><td>Mundo dos Cosméticos</td><td>Onboarding</td><td>Kick off</td><td>28/07/2026</td><td>Bruna Letícia</td><td>bruna.leticia@mundodocabeleireiro.com.br</td><td>+55 81 9832-0627</td><td>Flavia Alves</td></tr>
+                <tr><td>Daki</td><td>Acquisition</td><td>Closing</td><td>22/07/2026</td><td>Felipe Wanderley</td><td>felipe.wanderley@soudaki.com</td><td>+55 11 99594-2709</td><td>Fabio Lyra</td></tr>
+                <tr><td>Integração Bee Food</td><td>Integradora</td><td>Production credentials</td><td>17/07/2026</td><td>Bruno Galli</td><td>bruno.galli@beetech.com.br</td><td>+55 11 95957-2150</td><td>Owner não mapeado no painel</td></tr>
+                <tr><td>Keeko</td><td>Acquisition</td><td>Closing</td><td>13/07/2026</td><td>Oscar Leite</td><td>oscar@keeko.net</td><td>+55 11 98459-4999</td><td>Fabio Lyra</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const storageKey = 'painel-99-observacoes';
+    const notesField = document.getElementById('meetingNotes');
+    const notesStatus = document.getElementById('notesStatus');
+    const saveNotesBtn = document.getElementById('saveNotesBtn');
+    const clearNotesBtn = document.getElementById('clearNotesBtn');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const exportNotesBtn = document.getElementById('exportNotesBtn');
+    const printBtn = document.getElementById('printBtn');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    function activateTab(tabId) {
+      tabButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
+      tabPanels.forEach(panel => panel.classList.toggle('active', panel.id === tabId));
+    }
+    tabButtons.forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab)));
+
+    function loadNotes() {
+      const saved = window.localStorage.getItem(storageKey);
+      if (saved) {
+        notesField.value = saved;
+        notesStatus.textContent = 'Observação carregada nesta visualização.';
+      }
+    }
+    function saveNotes() {
+      window.localStorage.setItem(storageKey, notesField.value || '');
+      notesStatus.textContent = 'Observação salva nesta visualização.';
+    }
+    function clearNotes() {
+      notesField.value = '';
+      window.localStorage.removeItem(storageKey);
+      notesStatus.textContent = 'Observação removida desta visualização.';
+    }
+    function downloadTextFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+    function exportCsv() {
+      const rows = [
+        ['Seção','Métrica','Valor'],
+        ['Resumo','Total de negócios','477'],
+        ['Resumo','Closed Won','72'],
+        ['Resumo','Lost','284'],
+        ['Resumo','Etapas abertas','121'],
+        ['Alertas','Próximas atividades em 7 dias','13'],
+        ['Alertas','Negócios abertos sem contato recente','110'],
+        ['Alertas','Perdas com mais de 30 dias','272'],
+        ['Base associada','Negócios com contato associado','1431'],
+        ['Base associada','Associações negócio-contato','1918'],
+        ['Base associada','Registros prioritários completos','115'],
+        ['Base associada','Acquisition','136'],
+        ['Base associada','Inbound SMB','1084'],
+        ['Base associada','Outros pipelines','211'],
+        ['Base associada','Objeto LEAD','0']
+      ];
+      const csv = rows.map(row => row.map(cell => '"' + String(cell).replace(/"/g,'""') + '"').join(',')).join('\n');
+      downloadTextFile(csv, 'painel-comercial-99-resumo.csv', 'text/csv;charset=utf-8;');
+    }
+    function exportNotes() {
+      const content = notesField.value || 'Sem observações registradas.';
+      downloadTextFile(content, 'observacoes-reuniao-99.txt', 'text/plain;charset=utf-8;');
+    }
+    saveNotesBtn.addEventListener('click', saveNotes);
+    clearNotesBtn.addEventListener('click', clearNotes);
+    exportCsvBtn.addEventListener('click', exportCsv);
+    exportNotesBtn.addEventListener('click', exportNotes);
+    printBtn.addEventListener('click', () => window.print());
+    loadNotes();
+  </script>
+</body>
+</html>
